@@ -191,7 +191,7 @@ img {
   max-width: calc(100vw - 48px);
   max-height: calc(100vh - 24px);
   position: relative;
-  animation: zoom-in 500ms ease 1 normal forwards;
+  animation: zoom-in 300ms ease 1 normal forwards;
 }
 
 @keyframes zoom-in {
@@ -247,10 +247,11 @@ img {
   cursor: pointer;
   padding: 10px;
   visibility: hidden;
+  text-shadow: 1px 1px 5px #000;
 }
 
 .Modal:hover .close_btn {
-  color: tomato;
+  color: red;
   visibility: visible;
 }
 
