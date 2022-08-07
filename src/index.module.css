@@ -174,12 +174,36 @@ img {
   align-items: center;
   background-color: rgba(0, 0, 0, 0.8);
   z-index: 1200;
+  animation: fade-in 500ms ease 1 normal forwards;
+}
+
+@keyframes fade-in {
+  0% {
+    background-color: transparent;
+  }
+
+  100% {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
 }
 
 .Modal {
   max-width: calc(100vw - 48px);
   max-height: calc(100vh - 24px);
   position: relative;
+  animation: zoom-in 500ms ease 1 normal forwards;
+}
+
+@keyframes zoom-in {
+  0% {
+    max-width: calc(100vw / 10);
+    max-height: calc(100vh/ 10);
+  }
+
+  100% {
+    max-width: calc(100vw - 48px);
+    max-height: calc(100vh - 24px);
+  }
 }
 
 /*

@@ -36,7 +36,6 @@ class App extends React.Component {
 
     fetchImages(query, page)
       .then(async data => {
-        // Data handling
         const ImagesArray = filteredPropertiesArray(data.hits);
         this.setState({
           images: [...this.state.images, ...ImagesArray],
@@ -44,14 +43,8 @@ class App extends React.Component {
         });
       })
       .catch(error => {
-        // Error handling
         this.setState({ status: 'error' });
-      })
-      .finally
-      // this.setState({
-      //   status: 'ok',
-      // })
-      ();
+      });
   };
 
   submitHandler = event => {
@@ -61,7 +54,6 @@ class App extends React.Component {
   };
 
   openModal = event => {
-    // console.log(event.target.dataset);
     const { url, tags } = event.target.dataset;
     this.setState({
       imageInfo: { url, tags },

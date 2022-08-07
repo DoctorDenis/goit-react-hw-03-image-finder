@@ -1,7 +1,16 @@
 import React from 'react';
 import styles from '../index.module.css';
+import PropTypes from 'prop-types';
 
 export class Modal extends React.Component {
+  static propTypes = {
+    imageInfo: PropTypes.shape({
+      url: PropTypes.string.isRequired,
+      tags: PropTypes.string.isRequired,
+    }),
+    modalCloseMethod: PropTypes.func.isRequired,
+  };
+
   closeModal = event =>
     event.code === 'Escape' && this.props.modalCloseMethod();
 

@@ -1,5 +1,5 @@
 import styles from '../index.module.css';
-// import minion from '../images/minion.gif';
+import PropTypes from 'prop-types';
 
 export function Error({ message }) {
   return (
@@ -8,3 +8,7 @@ export function Error({ message }) {
     </>
   );
 }
+
+Error.propTypes = {
+  message: PropTypes.string.isRequired,
+};
