@@ -1,77 +1,109 @@
 import React from 'react';
-import { ContactForm, ContactList, Filter } from './exportMap';
+import {
+  Searchbar,
+  ImageGallery,
+  Modal,
+  Button,
+  Error,
+  Loader,
+  filteredPropertiesArray,
+} from '../helpers/exportMap';
+import { fetchImages } from '../fetchImages';
 
 class App extends React.Component {
   state = {
-    contacts: [],
-    filter: '',
+    images: [],
+    query: '',
+    page: 1,
+    status: 'resting',
+    modalOpened: false,
+    imageInfo: null,
   };
 
-  componentDidMount() {
-    if (JSON.parse(localStorage.getItem('contacts'))) {
-      this.setState({
-        contacts: JSON.parse(localStorage.getItem('contacts')),
-      });
+  componentDidMount() {}
+
+  componentDidUpdate(prevProps, prevState) {
+    const { query, page } = this.state;
+
+    if (prevState.query !== query || prevState.page !== page) {
+      this.getImagesData();
     }
   }
 
-  componentDidUpdate() {
-    localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-  }
+  getImagesData = () => {
+    const { query, page } = this.state;
+    this.setState({ status: 'waiting' });
 
-  onSubmitHandler = contact => {
-    if (this.state.contacts.find(el => el.name === contact.name)) {
-      alert(`Sorry! ${contact.name} is already in contacts`);
-      return;
-    }
+    fetchImages(query, page)
+      .then(async data => {
+        // Data handling
+        const ImagesArray = filteredPropertiesArray(data.hits);
+        this.setState({
+          images: [...this.state.images, ...ImagesArray],
+          status: 'ok',
+        });
+      })
+      .catch(error => {
+        // Error handling
+        this.setState({ status: 'error' });
+      })
+      .finally
+      // this.setState({
+      //   status: 'ok',
+      // })
+      ();
+  };
+
+  submitHandler = event => {
+    event.preventDefault();
+    const query = event.target.elements.query.value;
+    this.setState({ query, page: 1, images: [] });
+  };
+
+  openModal = event => {
+    // console.log(event.target.dataset);
+    const { url, tags } = event.target.dataset;
     this.setState({
-      contacts: [...this.state.contacts, contact],
+      imageInfo: { url, tags },
+      modalOpened: true,
     });
   };
 
-  onFilterInputChangeHandler = event => {
+  closeModal = () => {
     this.setState({
-      filter: event.target.value,
+      modalOpened: false,
     });
   };
 
-  filteredContacts = () => {
-    return this.state.contacts.filter(contact =>
-      contact.name.toLowerCase().includes(this.state.filter.toLowerCase())
-    );
-  };
-
-  onDeleteBtnClickHandler = event => {
-    this.setState({
-      contacts: [
-        ...this.state.contacts.filter(
-          contact => contact.id !== Number(event.target.id)
-        ),
-      ],
+  incrementPage = () => {
+    this.setState(prevState => {
+      return { page: prevState.page + 1 };
     });
   };
 
   render() {
-    const filteredContacts = this.filteredContacts();
+    const { status, images, modalOpened, imageInfo, query } = this.state;
     return (
-      <div>
-        <h1>Phonebook</h1>
-        <ContactForm
-          onSubmit={this.onSubmitHandler}
-          contactsRef={this.state.contacts}
-        />
+      <>
+        <Searchbar onSubmit={this.submitHandler} />
+        {status === 'error' && <Error />}
 
-        <h2>Contacts</h2>
-        <Filter
-          onChange={this.onFilterInputChangeHandler}
-          value={this.state.filter}
-        />
-
-        <ContactList
-          contacts={filteredContacts}
-          onClick={this.onDeleteBtnClickHandler}
-        />
-      </div>
+        {images.length > 0 && (
+          <>
+            <ImageGallery images={images} onClick={this.openModal} />
+            <Button onClick={this.incrementPage} />
+          </>
+        )}
+        {status === 'waiting' && <Loader />}
+        {images.length === 0 && query ? (
+          <Error message={`There is no images found on "${query}" query`} />
+        ) : (
+          <></>
+        )}
+        {modalOpened && (
+          <Modal imageInfo={imageInfo} modalCloseMethod={this.closeModal} />
+        )}
+      </>
     );
   }
 }
