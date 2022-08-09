@@ -4,7 +4,7 @@ import {
   ImageGallery,
   Modal,
   Button,
-  Error,
+  // Error,
   Loader,
   filteredPropertiesArray,
 } from '../helpers/exportMap';
@@ -19,8 +19,6 @@ class App extends React.Component {
     modalOpened: false,
     imageInfo: null,
   };
-
-  componentDidMount() {}
 
   componentDidUpdate(prevProps, prevState) {
     const { query, page } = this.state;
@@ -74,11 +72,11 @@ class App extends React.Component {
   };
 
   render() {
-    const { status, images, modalOpened, imageInfo, query } = this.state;
+    const { status, images, modalOpened, imageInfo } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.submitHandler} />
-        {status === 'error' && <Error />}
+        {/* {status === 'error' && <Error />} */}
 
         {images.length > 0 && (
           <>
@@ -87,11 +85,11 @@ class App extends React.Component {
           </>
         )}
         {status === 'waiting' && <Loader />}
-        {images.length === 0 && query ? (
+        {/* {images.length === 0 && query ? (
           <Error message={`There is no images found on "${query}" query`} />
         ) : (
           <></>
-        )}
+        )} */}
         {modalOpened && (
           <Modal imageInfo={imageInfo} modalCloseMethod={this.closeModal} />
         )}
